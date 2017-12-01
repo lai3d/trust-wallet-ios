@@ -73,16 +73,23 @@ struct TransactionCellViewModel {
     }
 
     var amount: String {
+        let number: BigInt = BigInt(transaction.value) ?? BigInt()
+
         let value: String = {
             if let operationValue = operationValue {
                 return operationValue
             }
-            let number = BigInt(transaction.value) ?? BigInt()
             return formatter.string(from: number)
         }()
+
         switch transaction.direction {
         case .incoming: return "+\(value)"
-        case .outgoing: return "-\(value)"
+        case .outgoing:
+            if number < 0 {
+                return "-\(value)"
+            } else {
+                return "\(value)"
+            }
         }
     }
 
